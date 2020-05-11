@@ -21,7 +21,7 @@ class FinalScenario extends Simulation{
   def rampDuration: Int = getProperty("RAMP_DURATION", "10").toInt
   def testDuration: Int = getProperty("DURATION", "60").toInt
 
-  var idNumbers = (60041 to 60050).iterator
+  var idNumbers = (7001 to 7100).iterator
   val rnd = new Random()
   val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd")
   val now = LocalDate.now()
