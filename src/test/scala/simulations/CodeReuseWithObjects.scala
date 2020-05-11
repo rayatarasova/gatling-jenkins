@@ -1,24 +1,23 @@
 package simulations
-
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
-class CodeReuseWithObjects extends Simulation {
+class CodeReuseWithObjects extends Simulation{
 
-  val httpConf = http.baseUrl("http://localhost:8080/app/")
+  val httpConf = http.baseUrl("http://video-game-db.eu-west-2.elasticbeanstalk.com/app/")
     .header("Accept", "application/json")
 
-
   def getAllVideoGames() = {
-    repeat(3) {
-      exec(http("Get all video games - 1st call")
+    repeat(3){
+      exec(http("Get all video game")
         .get("videogames")
         .check(status.is(200)))
     }
+
   }
 
-  def getSpecificVideoGame() = {
-    repeat(5) {
+  def getSpecificVideoGame()={
+    repeat(5){
       exec(http("Get specific game")
         .get("videogames/1")
         .check(status.in(200 to 210)))

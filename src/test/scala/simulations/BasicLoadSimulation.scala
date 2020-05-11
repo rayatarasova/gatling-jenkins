@@ -2,41 +2,33 @@ package simulations
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-
 import scala.concurrent.duration._
 
-class BasicLoadSimulation extends Simulation {
+class BasicLoadSimulation extends Simulation{
 
-  val httpConf = http.baseUrl("http://localhost:8080/app/")
+  val httpConf = http.baseUrl("http://video-game-db.eu-west-2.elasticbeanstalk.com/app/")
     .header("Accept", "application/json")
 
   def getAllVideoGames() = {
     exec(
-      http("Get all video games")
+      http("Get all videogames")
         .get("videogames")
-        .check(status.is(200))
+          .check(status.is(200))
     )
   }
 
-  def getSpecificGame() = {
+  def getSpecificVideoGame() = {
     exec(
-      http("Get Specific Game")
-        .get("videogames/2")
+      http("Get a specific video game")
+        .get("videogames/3")
         .check(status.is(200))
     )
   }
 
-  val scn = scenario("Basic Load Simulation")
+  val scn = scenario("Get all videogames")
     .exec(getAllVideoGames())
     .pause(5)
-    .exec(getSpecificGame())
-    .pause(5)
-    .exec(getAllVideoGames())
-
-  val scn2 = scenario("Basic Load Simulation 2")
-    .exec(getAllVideoGames())
-    .pause(5)
-    .exec(getSpecificGame())
+    .exec(getSpecificVideoGame())
     .pause(5)
     .exec(getAllVideoGames())
 
@@ -44,11 +36,8 @@ class BasicLoadSimulation extends Simulation {
     scn.inject(
       nothingFor(5 seconds),
       atOnceUsers(5),
-      rampUsers(10) during (10 seconds)
-    ).protocols(httpConf.inferHtmlResources()),
-    scn2.inject(
-      atOnceUsers(500)
-    ).protocols(httpConf)
+    rampUsers(10) during(10 seconds)
+    ).protocols(httpConf.inferHtmlResources())
   )
 
 }

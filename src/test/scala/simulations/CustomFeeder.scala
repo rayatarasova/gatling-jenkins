@@ -1,5 +1,4 @@
 package simulations
-
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -8,15 +7,15 @@ import io.gatling.http.Predef._
 
 import scala.util.Random
 
-class CustomFeeder extends Simulation {
+class CustomFeeder extends Simulation{
 
-  val httpConf = http.baseUrl("http://localhost:8080/app/")
+  val httpConf = http.baseUrl("http://video-game-db.eu-west-2.elasticbeanstalk.com/app/")
     .header("Accept", "application/json")
 
   var idNumbers = (11 to 20).iterator
   val rnd = new Random()
-  val now = LocalDate.now()
   val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val now = LocalDate.now()
 
   def randomString(length: Int) = {
     rnd.alphanumeric.filter(_.isLetter).take(length).mkString
@@ -35,29 +34,29 @@ class CustomFeeder extends Simulation {
     "rating" -> ("Rating-" + randomString(4))
   ))
 
-//  def postNewGame() = {
-  ////    repeat(5) {
-  ////      feed(customFeeder)
-  ////        .exec(http("Post New Game")
-  ////        .post("videogames/")
-  ////        .body(StringBody(
-  ////                      "{" +
-  ////                      "\n\t\"id\": ${gameId}," +
-  ////                      "\n\t\"name\": \"${name}\"," +
-  ////                      "\n\t\"releaseDate\": \"${releaseDate}\"," +
-  ////                      "\n\t\"reviewScore\": ${reviewScore}," +
-  ////                      "\n\t\"category\": \"${category}\"," +
-  ////                      "\n\t\"rating\": \"${rating}\"\n}")
-  ////        ).asJson
-  ////        .check(status.is(200)))
-  ////        .pause(1)
-  ////    }
-  ////  }
+  /*def postNewGame() = {
+    repeat(5) {
+      feed(customFeeder)
+        .exec(http("Create video game")
+          .post("videogames/")
+          .body(StringBody(
+            "{" +
+              "\n\t\"id\": ${gameId}," +
+              "\n\t\"name\": \"${name}\"," +
+              "\n\t\"releaseDate\": \"${releaseDate}\"," +
+              "\n\t\"reviewScore\": ${reviewScore}," +
+              "\n\t\"category\": \"${category}\"," +
+              "\n\t\"rating\": \"${rating}\"\n}")
+          ).asJson
+            .check(status.is(200)))
+          .pause(1)
+    }
+  }*/
 
   def postNewGame() = {
     repeat(5) {
       feed(customFeeder)
-        .exec(http("Post New Game")
+        .exec(http("Create video game")
           .post("videogames/")
             .body(ElFileBody("bodies/NewGameTemplate.json")).asJson
           .check(status.is(200)))
@@ -65,9 +64,8 @@ class CustomFeeder extends Simulation {
     }
   }
 
-  val scn = scenario("Post new games")
+  val scn = scenario("Custom Feeder")
       .exec(postNewGame())
-
 
   setUp(
     scn.inject(atOnceUsers(1))
